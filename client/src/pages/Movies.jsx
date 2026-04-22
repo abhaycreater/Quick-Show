@@ -1,10 +1,12 @@
 
 import React from "react";
-import { assets, dummyShowsData } from "../assets/assets";
+import { assets } from "../assets/assets";
 import MovieCard from "../components/MovieCard";
+import { useAppContext } from "../context/AppContext";
 
 const Movies = () => {
-  return dummyShowsData.length > 0 ? (
+  const {shows} = useAppContext()
+  return shows.length > 0 ? (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background Video */}
       <video
@@ -27,7 +29,7 @@ const Movies = () => {
 </h1>
 
   <div className="flex flex-wrap max-sm:justify-center gap-8">
-    {dummyShowsData.map((movie) => (
+    {shows.map((movie) => (
       <MovieCard movie={movie} key={movie._id} />
     ))}
   </div>

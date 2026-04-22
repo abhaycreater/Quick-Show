@@ -1,11 +1,13 @@
 import React from "react";
-import { assets, dummyShowsData } from "../assets/assets";
+import { assets } from "../assets/assets";
 import MovieCard from "../components/MovieCard";
+import { useAppContext } from "../context/AppContext";
 
 const Favorite = () => {
-  const totalMovies = dummyShowsData.length;
+  const {favoritesMovies} = useAppContext()
+  const totalMovies = favoritesMovies.length;
   const genres = new Set(
-  dummyShowsData.flatMap((movie) =>
+  favoritesMovies.flatMap((movie) =>
     movie.genres?.map((genre) => genre.id) || []
   )
 ).size;
@@ -47,7 +49,7 @@ const Favorite = () => {
 
         {/* 7) Favorites grid */}
         <div className="flex flex-wrap max-sm:justify-center gap-8">
-          {dummyShowsData.map((movie) => (
+          {favoritesMovies.map((movie) => (
             <div key={movie._id} className="relative group">
               <MovieCard movie={movie} />
 
