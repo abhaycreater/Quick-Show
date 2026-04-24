@@ -14,7 +14,10 @@ const DateSelect = ({dateTime , id}) => {
             return toast('Please select a date')
         }
         navigate(`/movies/${id}/${selected}`)
-        scrollTo(0.0)
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     }
 
   return (

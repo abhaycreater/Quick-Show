@@ -7,6 +7,7 @@ import sendEmail from "../configs/nodemailer.js";
 // Create client
 export const inngest = new Inngest({
   id: "movie-ticket-booking",
+  eventKey: process.env.INGEST_EVENT_KEY,
 });
 
 // Add user

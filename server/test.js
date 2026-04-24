@@ -1,20 +1,37 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import axios from "axios";
+import nodemailer from "nodemailer";
 
-const test = async () => {
+const transporter = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false, // ✅ FIX
+  },
+});
+
+const run = async () => {
   try {
-    console.log("API KEY:", process.env.TMDB_API_KEY);
+    await transporter.verify();
+    console.log("Connected!");
 
-    const res = await axios.get(
-      `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.TMDB_API_KEY}`
-    );
+    const info = await transporter.sendMail({
+      from: process.env.SENDER_EMAIL,
+      to: "patereabhay4@gmail.com",
+      subject: "Test",
+      html: "<h1>Hello</h1>",
+    });
 
-    console.log(res.data);
+    console.log("Sent:", info);
   } catch (err) {
-    console.log("ERROR:", err.response?.data || err.message);
+    console.error("ERROR:", err);
   }
 };
 
-test();
+run();
