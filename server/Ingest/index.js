@@ -163,8 +163,10 @@ const sendBookingConfirmationEmail = inngest.createFunction(
 
 //Inggest function to send reminder
 const sendShowReminders = inngest.createFunction(
-  {id: "send-show-reminders"},
-  {cron: "0 */8 * * *"},//every 8 hours
+  {
+    id: "send-show-reminders",
+    triggers: [{ cron: "0 */8 * * *" }], // ✅ FIXED
+  },//every 8 hours
 
   async ({step})=>{
     const now = new Date();
@@ -182,23 +184,23 @@ const sendShowReminders = inngest.createFunction(
       for(const show of shows){
         if(!show.movie || !show.occupiedSeats) continue;
 
-        const userId = [...new set(Object.values(show.occupiedSeats))];
-        if(userId.length === 0) continue;
+        const userIds = [...new Set(Object.values(show.occupiedSeats))];
+        if(userIds.length === 0) continue;
 
-        const users = await User.find({_id:{userId}}).select('name email')
+        const users = await User.find({_id:{userIds}}).select('name email')
 
         for(const user of users){
           tasks.push({
             userEmail: user.email,
             userName:user.name,
             movieTitle:show.movie.title,
-            showTime: show.showTime,
+            showTime: show.showDateTime,
           })
         }
       }
       return tasks;
     })
-    if(reminderTask.length === 0){
+    if(!reminderTask || reminderTask.length === 0){
       return {sent: 0, message:'No reminders to send,.'}
     }
 
@@ -271,8 +273,10 @@ const sendShowReminders = inngest.createFunction(
 )
 //inngest function new notification
 const sendNewShowNotification = inngest.createFunction(
-  {id: "send-new-show-notification"},
-  {event: "app/show-added"},
+  {
+    id: "send-new-show-notification",
+    triggers: [{ event: "app/show-added" }], // ✅ FIX
+  },
   async ({event})=>{
     const {movieTitle , movieId} = event.data;
 
