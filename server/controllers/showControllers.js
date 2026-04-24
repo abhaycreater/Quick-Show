@@ -3,6 +3,7 @@ import movieModel from "../models/Movie.js";
 import showModel from "../models/Show.js";
 import https from 'https'
 import { set } from "mongoose";
+import { inngest } from "../Ingest/index.js";
 
 
 //api to get now playing movies from TMDB API
@@ -98,6 +99,12 @@ export const addShow = async (req, res) => {
     if (showToCreate.length > 0) {
       await showModel.insertMany(showToCreate);
     }
+
+    // trigar inngest event
+    await inngest.send({
+      name: "app/show.added",
+      data:{movieTitle: movie.title }
+    })
 
     res.json({ success: true, message: "Show Added Successfully." });
   } catch (error) {

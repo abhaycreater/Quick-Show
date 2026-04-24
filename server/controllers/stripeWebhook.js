@@ -30,7 +30,9 @@ export const stripeWebhooks = async (req, res) => {
         await Booking.findByIdAndUpdate(bookingId, {
           isPaid: true,
           paymentLink: "",
-        });
+        },{new: true});
+
+        
 
         await inngest.send({
           name: "app/show.booked",
